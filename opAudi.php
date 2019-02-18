@@ -64,7 +64,16 @@ if (empty($_POST['opcion']) || !empty($_POST['volver'])){
             <th>Response Time</th>
             <th>Endpoint</th>
         </tr>
-       
+        <?php
+        foreach ($res as $rs) {
+            echo "<tr>";
+            echo "<td>" . $rs["auditoria_id"] . "</td>";
+            echo "<td>" . $rs["fecha_acceso"] . "</td>";
+            echo "<td>" . $rs["user"] . "</td>";
+            echo "<td>" . $rs["response_time"] . "</td>";
+            echo "<td>" . $rs["endpoint"] . "</td>";
+            echo "</tr>";
+        } ?>
     </table>
     <form method="POST">
                         <input type="hidden" name="volver" value="1">
@@ -85,7 +94,23 @@ if(empty($_POST["fechaInicio"]) && empty($_POST["fechaFinal"]))
         <body>
         
        
-       <?php
+        <form method='POST' action="opAudi.php">
+            Desde <input type='date' name='fechaInicio'>
+            <br>
+            Hasta <input type='date' name='fechaFinal'>
+            <br>
+            <input type="hidden" name="opcion" value="arch">
+            <input type="submit" value="enviar">
+
+        </form>
+        <form method="POST">
+                        <input type="hidden" name="volver" value="1">
+                        <input value="Volver" type="submit">
+                        </form>
+                        
+        </body>
+        </html>
+        <?php
     } else {
         
         $file = fopen("auditoria.txt", "c+");
@@ -99,6 +124,8 @@ if(empty($_POST["fechaInicio"]) && empty($_POST["fechaFinal"]))
         }
         file_put_contents("auditoria.txt", $contenido);
         $_POST["opcion"] = "";
+        header ("Content-Disposition: attachment; filename=auditoria.txt");
+        header ("Content-Type: application/octet-stream");
         readfile("auditoria.txt");
     }
 }

@@ -54,7 +54,10 @@ if (empty($_POST['opcion']) || !empty($_POST['volver'])){
             <input type="hidden" name="opcion" value="del">
             <input value="Borra" type="submit">
         </form>
-       
+        <form method="POST">
+            <input type="hidden" name="opcion" value="edit">
+            <input value="Editar" type="submit">
+        </form>
     <?php
 
 }else if($_POST["opcion"]=="list"){
@@ -157,7 +160,55 @@ if (empty($_POST['opcion']) || !empty($_POST['volver'])){
 
 
 
+            }else if($_POST['opcion'] == "edit") {
+                if(!empty($_POST['editarUsuarioOK'])) {
+                    $sql = "UPDATE `usuario` SET `usuario` = '".$_POST['usuario']."' , `clave` = '".hash('sha256', strtoupper($_POST['pass'] . "adminxd"))."' WHERE `id` = '".$_POST['lista']."';";
+                    $ejecucionSQL = $conexion->prepare($sql);
+                    $ejecucionSQL->execute();
+                    echo "<h4>Se ha editado el usuario " . $_POST['usuario'] . "</h4>";
+
+                }
+                $sql = "SELECT * FROM `usuario`";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+                $res = $ejecucionSQL->fetchAll();
+                ?>
+                <form method="POST" action="opUsu.php">
+                <select name="lista">
+                    <?php
+                    foreach ($res as $rs) {
+                        ?>
+                        <option value="<?php echo $rs["id"]; ?>"><?php echo $rs["id"] . " " . $rs["usuario"]; ?></option>
+                        <?php
+                    } ?>
+                </select>
+                <input type="hidden" name="opcion" value="edit">
+                <input type="submit" value="editar">
+                </form><?php
+                foreach ($res as $rs) {
+                    if (!empty($_POST['lista'])) {
+                        if ($_POST['lista'] == $rs['id']) {
+                            echo "<form method='POST' action='opUsu.php'>";
+                            echo "<input type='text' name='usuario' placeholder='" . $rs['usuario'] . "'>";
+                            echo "<input type='password' name='pass' placeholder='clave'>";
+                            echo "<input type='hidden' name='opcion' value='edit'>";
+                            echo "<input type='hidden' name='editarUsuarioOK' value='editarUsuarioOK'>";
+                            echo "<input type='hidden' name='lista' value='".$_POST['lista']."'>";
+                            echo "<input type='submit' value='OK'>";
+                            echo "</form>";
+                        }
+                    }
+                }
+                ?>
+                </table>
+                <form method="POST">
+                <input type="hidden" name="volver" value="1">
+                <input value="Volver" type="submit">
+                </form>
+             <?php 
+            
             }
+        
 
         ?>
 </body>
