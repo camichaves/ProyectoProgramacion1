@@ -25,7 +25,7 @@ $conexion = new PDO("mysql:host=$servidor;dbname=$bd",$usuario,$clave);
 
     $hora = date('j-G');
     $session_id = session_id();
-    $token = hash('sha256', $hora.$session_id);
+    
     
 
 
@@ -60,7 +60,7 @@ if(empty($_POST['pass'])  ) {
                         <input type="submit" class="btn btn-lg btn-success btn-block" value="Sign In">
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<a href="" class="btn btn-lg btn-primary btn-block">Register</a>
+						
 					</div>
 				</div>
 			</fieldset>
@@ -94,6 +94,8 @@ if(empty($_POST['pass'])  ) {
     }
 
     $_SESSION['usuario']=$filaPDO['usuario'];
+    if($filaPDO['rol']=="admin"){$token = hash('sha256', $hora.$session_id);}else
+    {$token = hash('sha256', $hora);}
     $_SESSION['token']=$token;
     //insert en usuario o pass el token
     $sql = "UPDATE `usuario` SET `token` = '".$_SESSION['token']."'  WHERE `usuario` = '".$_SESSION['usuario']."';";

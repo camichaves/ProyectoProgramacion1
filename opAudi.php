@@ -128,4 +128,9 @@ if(empty($_POST["fechaInicio"]) && empty($_POST["fechaFinal"]))
         header ("Content-Type: application/octet-stream");
         readfile("auditoria.txt");
     }
+
 }
+?>
+<li><a href="mainadmin.php"><i class="fa fa-bar-chart-o fa-fw"></i>Menu Principal</a></li>
+</body>
+</html>

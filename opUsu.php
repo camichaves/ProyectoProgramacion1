@@ -208,8 +208,8 @@ if (empty($_POST['opcion']) || !empty($_POST['volver'])){
              <?php 
             
             }
-        
-
-        ?>
+            ?>
+            <li><a href="mainadmin.php"><i class="fa fa-bar-chart-o fa-fw"></i>Menu Principal</a></li>
+      
 </body>
 </html>
