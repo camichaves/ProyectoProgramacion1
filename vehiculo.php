@@ -10,7 +10,7 @@ $conexion = new PDO("mysql:host=$servidor;dbname=$bd",$usuario,$clave);
 
 
 
-$hora = date('j-G.d');
+$hora = date('j-G');
 
 $token = hash('sha256', $hora);
 
@@ -62,7 +62,53 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case "PUT":
         $data = json_decode(file_get_contents("php://input"), true);
         if($token ==$data["token"]) {
-        
+            $time_pre = microtime(true);
+            if (isset($data["patente"])) {
+                $sql = "UPDATE `vehiculo` SET `patente` = '" . $data["patente"] . "' WHERE `vehiculo_id` = '" . $data["vehiculo_id"] . "';";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+            }
+            if (isset($data["anho_patente"])) {
+                $sql = "UPDATE `vehiculo` SET `anho_patente` = '" . $data["anho_patente"] . "' WHERE `vehiculo_id` = '" . $data["vehiculo_id"] . "';";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+            }
+            if (isset($data["anho_fabricacion"])) {
+                $sql = "UPDATE `vehiculo` SET `anho_fabricacion` = '" . $data["anho_fabricacion"] . "' WHERE `vehiculo_id` = '" . $data["vehiculo_id"] . "';";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+            }
+            if (isset($data["marca"])) {
+                $sql = "UPDATE `vehiculo` SET `marca` = '" . $data["marca"] . "' WHERE `vehiculo_id` = '" . $data["vehiculo_id"] . "';";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+            }
+            if (isset($data["modelo"])) {
+                $sql = "UPDATE `vehiculo` SET `modelo` = '" . $data["modelo"] . "' WHERE `vehiculo_id` = '" . $data["vehiculo_id"] . "';";
+                $ejecucionSQL = $conexion->prepare($sql);
+                $ejecucionSQL->execute();
+            }
+            $time_post = microtime(true);
+            $time = $time_post - $time_pre;
+            $sql = "INSERT INTO `auditoria` (`fecha_acceso`, `user`, `response_time`, `endpoint`) VALUES ('".date('Y-m-d H:i:s')."', '".$data["usuario"]."', '".$time."', 'modificarVehiculo.php');";
+            $ejecucionSQL = $conexion->prepare($sql);
+            $ejecucionSQL->execute();
+        }
         break;
-    
+    case "DELETE":
+        $data = json_decode(file_get_contents("php://input"), true);
+        if($token ==$data["token"]) {
+            echo "hola";
+            $time_pre = microtime(true);
+            echo "vehiculo id:".$data['vehiculo_id'];
+            $sql = "DELETE FROM vehiculo WHERE vehiculo_id = ".$data["vehiculo_id"].";";
+            $ejecucionSQL = $conexion->prepare($sql);
+            $ejecucionSQL->execute();
+            $time_post = microtime(true);
+            $time = $time_post - $time_pre;
+            $sql = "INSERT INTO `auditoria` (`fecha_acceso`, `user`, `response_time`, `endpoint`) VALUES ('".date('Y-m-d H:i:s')."', '".$data["token"]."', '".$time."', 'eliminarVehiculo.php');";
+            $ejecucionSQL = $conexion->prepare($sql);
+            $ejecucionSQL->execute();
+        }
+        break;
 }
