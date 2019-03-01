@@ -98,10 +98,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case "DELETE":
         $data = json_decode(file_get_contents("php://input"), true);
         if($token ==$data["token"]) {
-            echo "hola";
+            
             $time_pre = microtime(true);
-            echo "vehiculo id:".$data['vehiculo_id'];
-            $sql = "DELETE FROM vehiculo WHERE vehiculo_id = ".$data["vehiculo_id"].";";
+            
+            $sql = "DELETE FROM `vehiculo` WHERE `vehiculo_id` = ".$data["vehiculo_id"].";";
             $ejecucionSQL = $conexion->prepare($sql);
             $ejecucionSQL->execute();
             $time_post = microtime(true);
