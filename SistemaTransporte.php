@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 session_start();
 //Conecto la base de datos
 $usuario="root";
@@ -82,5 +79,19 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $ejecucionSQL->execute();
         }
         break;
-   
+    case "DELETE":
+        $data = json_decode(file_get_contents("php://input"),true);
+        if($token==$data['token']) {
+            $time_pre = microtime(true);
+            $sql = "DELETE FROM `sistema_transporte` WHERE `sistema_id` = '".$data["sistema_id"]."';";
+            $ejecucionSQL = $conexion->prepare($sql);
+            $ejecucionSQL->execute();
+            $time_post = microtime(true);
+            $time = $time_post - $time_pre;
+            $time = $time*pow(10,3);
+            $sql = "INSERT INTO `auditoria` (`fecha_acceso`, `user`, `response_time`, `endpoint`) VALUES ('".date('Y-m-d H:i:s')."', '".$data["usuario"]."', '".$time."', 'borrarSistemaTransporte');";
+            $ejecucionSQL = $conexion->prepare($sql);
+            $ejecucionSQL->execute();
+        }
+        break;
 }
